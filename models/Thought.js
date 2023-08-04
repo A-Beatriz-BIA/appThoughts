@@ -11,7 +11,7 @@ const thought = db.define("Thought", {
   },
 });
 
-thought.belongsTo(User);
+thought.belongsTo(User); //inclusão de user
 User.hasMany(thought);
 
 module.exports = thought;

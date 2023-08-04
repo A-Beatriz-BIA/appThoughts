@@ -9,7 +9,7 @@ const app = express();
 const conn = require("./db/conn");
 
 // Models
-const thought = require("./models/thought");
+const thought = require("./models/Thought");
 
 // routes
 const authRoutes = require("./routes/authRoutes");
