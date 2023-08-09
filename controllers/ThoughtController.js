@@ -29,7 +29,7 @@ module.exports = class ThoughtController{
         res.render('thoughts/dashboard', {thoughts, emptyThoughts}) //renderiza
     }
 
-    static showThougths(req, res){
+    static showThougths(req, res){ //joga a informação para esse método
         console.log(req.query)
 
         let search = ''
@@ -51,7 +51,17 @@ module.exports = class ThoughtController{
             where: {
                 title:{[Op.like]:`%${search}%`},
             },
-            order:[['created', order]]
-        })
+            order:[['createdAt', order]]
+        }).then((data) =>{
+            let thoughtsQty = data.length
+
+            if(thoughtsQty === 0){ // compara todos os atributos
+                thoughtsQty = false
+            }
+
+            const thoughts = data.map((result) => result.get({plain: true}))
+
+            res.render('thoughts/home', {thoughts,thoughtsQty,search})
+        }).catch((err) => console.error(err))
     }
 }
