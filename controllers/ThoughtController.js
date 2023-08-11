@@ -4,6 +4,7 @@ const User = require('../models/User')
 const { Op } = require('sequelize')
 
 module.exports = class ThoughtController{
+
     static async dashboard(req, res){
         const userId = req.session.userid //faz a requisição
 
@@ -42,9 +43,8 @@ module.exports = class ThoughtController{
 
         if (req.query.order === 'old'){
             order = 'ASC'
-        }else{
-            order
         }
+
         console.log(order)
         Thought.findAll({
             include: User,
@@ -63,5 +63,48 @@ module.exports = class ThoughtController{
 
             res.render('thoughts/home', {thoughts,thoughtsQty,search})
         }).catch((err) => console.error(err))
+    }
+
+    static createThought(req, res){
+        res.render('thoughts/create')
+    }
+
+    static createThoughtSave(req, res){ //método que salva no banco de dados
+        const thought = {
+            title: req.body.title,
+            UserId: req.session.userid
+        }
+
+        Thought.create(thought)
+        .then(() => {
+            req.flash('message', 'Pensamento foi criado com sucesso.') //flash acessa a memória RAM
+            req. session.save(() => {
+                res.redirect('/thoughts/dashboard')
+            })
+        })
+        .catch((err) => console.log(err))
+    }
+
+    static removeThought(req, res){
+        const id = req.body.id
+
+        Thought.destroy({where: {id:id}})
+        .then(() => {
+            req.flash('message', 'Pensamento excluído com sucesso.')
+            req.session.save(() => {
+                res.redirect('/thoughts/dashboard')
+            })
+        })
+        .cath((err) => console.log(err))
+    }
+
+    static updateThought(req, res){
+        const id = req.params.id
+
+        Thought.findOne({ where: {id:id}, raw: true})
+        .then((thought) => {
+            res.render('thoughts/edit', {thought})
+        })
+        .catch((err) => console.log(err))
     }
 }
