@@ -98,7 +98,7 @@ module.exports = class ThoughtController{
         .cath((err) => console.log(err))
     }
 
-    static updateThought(req, res){
+    static updateThought(req, res){ // busca o pensamento - onde clica
         const id = req.params.id
 
         Thought.findOne({ where: {id:id}, raw: true})
@@ -107,4 +107,23 @@ module.exports = class ThoughtController{
         })
         .catch((err) => console.log(err))
     }
+
+    static updateThoughtPost(req, res){ // onde edita
+        const id = req.body.id
+
+        const thought = {
+            title: req.body.title,
+            description: req.body.description
+        }
+
+        Thought.update(thought, {where: {id:id}})
+        .then((thought) => {
+            req.flash('message', 'Pensamento alterado com sucesso!')
+            req. session.save(() => {
+                res.render('thought/dashboard')
+            })
+        })
+        .catch((err) => console.error(err))
+    }
+
 }
