@@ -16,7 +16,7 @@ module.exports = class ThoughtController{
             plain: true, 
         })
 
-        const thoughts = user.Thought.map((result) => result.dataValues) //mapeamento
+        const thoughts = user.Thoughts.map((result) => result.dataValues) //mapeamento
 
         let emptyThoughts = true //variavel booleana para ver se os pensamentos estão vazios ou não
 
